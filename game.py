@@ -45,9 +45,15 @@ backround = pygame.image.load(asset_background)
 asset_dice_sound = resource_path('assets/sounds/dice.mp3')
 dice_sound = pygame.mixer.Sound(asset_dice_sound)
 
+# Predefined positions for the green circle
+green_circle_positions = [(240, 585)]
+blue_circle_positions = [(171, 27) ,(219, 112), (269, 111), (318, 29), (246, 165), (194, 223), (301, 221)]
 def gameloop():
     in_game = True
     screen.blit(backround, (0, 0))
+    green_circle_position = None
+    blue_circle_position = None
+
     while in_game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -59,16 +65,22 @@ def gameloop():
                 print("Mouse coordinates", mouse_coordinates)
                 if dice_rect.collidepoint(event.pos):
                     results = roll_dice()
-                    print(f"Results: {results}")
+                    #print(f"Results: {results}")
                     for i, result in enumerate(results):
                         screen.blit(dice_images[result - 1], (500, 25 + i * 100))
                     ones_count = sum(1 for result in results if result == 1)
                     if ones_count == 3:
-                        pygame.draw.circle(screen, GREEN, (240, 585), 25)
+                        if len(green_circle_positions) >= 1:
+                            green_circle_position = green_circle_positions.pop(0)
+                            pygame.draw.circle(screen, GREEN, green_circle_position, 25)
+                    if ones_count == 2:
+                        if len(blue_circle_positions) >= 1:
+                            blue_circle_position = blue_circle_positions.pop(0)
+                            pygame.draw.circle(screen, BLUE, blue_circle_position, 25)
                     print("Number of ones:", ones_count)
                     pygame.display.flip()
 
-        # Draw a button to roll the dice
+         # Draw a button to roll the dice
         dice_rect = pygame.draw.rect(screen, RED, (25, 650, 125, 50))
         pygame.draw.rect(screen, RED, dice_rect)
         font = pygame.font.Font(None, 36)
