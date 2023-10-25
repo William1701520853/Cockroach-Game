@@ -72,6 +72,8 @@ def gameloop():
     blue_circle_position = None
     black_circle_position = None
 
+    test = 5
+
     player_money = 1000 
     has_rolled = False
     textPlayer = ''
@@ -91,8 +93,7 @@ def gameloop():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_coordinates = pygame.mouse.get_pos()
-                test = roll_dice2(5)
-                print("Mouse coordinates", test)
+                #print("Mouse coordinates", mouse_coordinates)
                 if restart_rect.collidepoint(event.pos):
                     # Limpiar la pantalla
                     screen.fill(BLACK)
@@ -108,26 +109,34 @@ def gameloop():
                     pygame.draw.rect(screen, BLACK, restart_rect)
 
                 if dice_rect.collidepoint(event.pos):
+                    hide_rect = pygame.draw.rect(screen, BLACK, (480, 0, 120, 800))
+                    pygame.draw.rect(screen, BLACK, hide_rect)
                     if has_rolled:
                         textPlayer = "Ya has lanzado los dados. Debes pagar si no obtienes 1."
                     else:
-                        results = roll_dice()
-                        #print(f"Results: {results}")
+                        results = roll_dice2(test)
+                        print(f"Results: {results}")
                         for i, result in enumerate(results):
                             screen.blit(dice_images[result - 1], (500, 25 + i * 100))
+                        six_count = sum(1 for result in results if result == 6)
                         ones_count = sum(1 for result in results if result == 1)
                         if ones_count == 3:
                             if len(green_circle_positions_aux) >= 1:
                                 green_circle_position = green_circle_positions_aux.pop(0)
                                 pygame.draw.circle(screen, GREEN, green_circle_position, 25)
+                                test = test - ones_count
                         if ones_count == 2:
                             if len(blue_circle_positions_aux) >= 1:
                                 blue_circle_position = blue_circle_positions_aux.pop(0)
                                 pygame.draw.circle(screen, BLUE, blue_circle_position, 25)
+                                test = test - ones_count
+
                         if ones_count == 1:
                             if len(black_circle_positions_aux) >= 1:
                                 black_circle_position = black_circle_positions_aux.pop(0)
                                 pygame.draw.circle(screen, BLACK, black_circle_position, 25)
+                                test = test - ones_count
+
                         
                         if ones_count == 0:
                             # El jugador no obtuvo ningún 1, debe pagar una multa

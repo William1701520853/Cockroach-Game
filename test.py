@@ -112,6 +112,7 @@ def gameloop():
                         for i, result in enumerate(results):
                             screen.blit(dice_images[result - 1], (500, 25 + i * 100))
                         ones_count = sum(1 for result in results if result == 1)
+                        six_count = sum(1 for result in results if result == 6)
                         if ones_count == 3:
                             if len(green_circle_positions_aux) >= 1:
                                 green_circle_position = green_circle_positions_aux.pop(0)
